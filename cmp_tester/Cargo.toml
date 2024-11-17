@@ -3,4 +3,9 @@ name = "cmp_tester"
 version = "0.1.0"
 edition = "2021"
 
+
+[dev-dependencies]
+mockall = "*"
+
+
 [dependencies]
