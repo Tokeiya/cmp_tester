@@ -129,19 +129,26 @@ fn symmetric_fail_test() {
 		tester::assert_symmetric(mock_x, mock_y);
 	});
 }
-// #[test]
-// fn assert_eq_test() {
-// 	let mut mock_x = MockSample::new();
-// 	mock_x.expect_eq().returning(|_| true);
-//
-// 	let mut mock_y = MockSample::new();
-// 	mock_y.expect_eq().returning(|_| true);
-//
-// 	let mut mock_z = MockSample::new();
-// 	mock_z.expect_eq().returning(|_| true);
-//
-// 	let other = MockSample::new();
-// 	other.expect_eq().returning(|_| false);
-//
-// 	tester::assert_eq(mock_x, mock_y, mock_z, other);
-// }
+
+#[test]
+fn assert_eq_test() {
+	fn gen(flg: bool) -> MockSample {
+		let mut mock = MockSample::new();
+		mock.expect_eq().returning(move |_| flg);
+		mock
+	}
+
+	tester::assert_eq(1, 1, 1, 2);
+
+	assert_panic(|| {
+		tester::assert_eq(1, 2, 3, 4);
+	});
+
+	assert_panic(|| {
+		tester::assert_eq(1, 1, 1, 1);
+	});
+
+	assert_panic(|| {
+		tester::assert_eq(1, 1, 2, 4);
+	});
+}
