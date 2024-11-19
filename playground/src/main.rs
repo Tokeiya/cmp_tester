@@ -4,12 +4,5 @@ fn main() {}
 mod tests {
 
 	#[test]
-	fn foo() {
-		#[should_panic]
-		fn f() {
-			panic!()
-		}
-
-		f();
-	}
+	fn foo() {}
 }

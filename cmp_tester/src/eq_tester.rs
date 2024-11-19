@@ -6,8 +6,8 @@ pub fn assert_reflexivity<T: Eq>(x: T) {
 
 pub fn assert_transitive<T: Eq>(x: T, y: T, z: T) {
 	assert!(x.eq(&y));
-	assert!(x.eq(&z));
 	assert!(y.eq(&z));
+	assert!(x.eq(&z));
 }
 
 pub fn assert_symmetric<T: Eq>(x: T, y: T) {
