@@ -152,3 +152,12 @@ fn assert_eq_test() {
 		tester::assert_eq(1, 1, 2, 4);
 	});
 }
+
+
+mod common;
+use common::setup;
+
+#[test]
+fn foo() {
+	setup()
+}
