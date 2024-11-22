@@ -2,10 +2,9 @@ mod common;
 
 extern crate cmp_tester;
 
-use cmp_tester::eq_tester as tester;
+use cmp_tester::partial_eq_tester as tester;
 use common::panic_wrapper::assert_panic;
 use mockall::mock;
-use std::cmp::Eq;
 
 mock! {
 	Sample{}
@@ -13,17 +12,15 @@ mock! {
 	impl PartialEq for Sample {
 		fn eq(&self, other: &Self) -> bool;
 	}
-
-	impl Eq for Sample {}
 }
 
 #[test]
 fn not_equal() {
 	let mut mock_x = MockSample::new();
-	mock_x.expect_eq().returning(|_| false);
+	mock_x.expect_eq().times(2).returning(|_| false);
 
 	let mut mock_y = MockSample::new();
-	mock_y.expect_eq().returning(|_| false);
+	mock_y.expect_eq().times(2).returning(|_| false);
 
 	tester::assert_not_equal(mock_x, mock_y);
 }
@@ -31,13 +28,13 @@ fn not_equal() {
 #[test]
 fn reflexivity_test() {
 	let mut mock = MockSample::new();
-	mock.expect_eq().returning(|_| true);
+	mock.expect_eq().times(1).returning(|_| true);
 
 	tester::assert_reflexivity(mock);
 
 	assert_panic(|| {
 		let mut mock = MockSample::new();
-		mock.expect_eq().returning(|_| false);
+		mock.expect_eq().times(1).returning(|_| false);
 		tester::assert_reflexivity(mock);
 	});
 }
@@ -121,7 +118,7 @@ fn symmetric_fail_test() {
 
 	assert_panic(move || {
 		let mut mock_x = MockSample::new();
-		mock_x.expect_eq().returning(|_| true);
+		mock_x.expect_eq().times(1).returning(|_| true);
 
 		let mut mock_y = MockSample::new();
 		mock_y.expect_eq().times(1).returning(|_| false);
