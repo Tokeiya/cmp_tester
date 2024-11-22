@@ -47,15 +47,20 @@ fn transitive_test() {
 	let mut mock_y = MockSample::new();
 	mock_y.expect_eq().returning(|_| true);
 
-	let mock_z = MockSample::new();
+	let mut mock_z = MockSample::new();
+	mock_z.expect_eq().returning(|_| true);
+
 	tester::assert_transitive(mock_x, mock_y, mock_z);
 
 	assert_panic(|| {
 		let mut mock_x = MockSample::new();
 		mock_x.expect_eq().returning(|_| false);
 
-		let mock_y = MockSample::new();
-		let mock_z = MockSample::new();
+		let mut mock_y = MockSample::new();
+		mock_y.expect_eq().returning(|_| true);
+
+		let mut mock_z = MockSample::new();
+		mock_z.expect_eq().returning(|_| true);
 
 		tester::assert_transitive(mock_x, mock_y, mock_z);
 	});
@@ -67,28 +72,21 @@ fn transitive_test() {
 		let mut mock_y = MockSample::new();
 		mock_y.expect_eq().returning(|_| false);
 
-		let mock_z = MockSample::new();
+		let mut mock_z = MockSample::new();
+		mock_z.expect_eq().returning(|_| true);
 
 		tester::assert_transitive(mock_x, mock_y, mock_z);
 	});
 
 	assert_panic(|| {
-		let mut cnt = 0;
-
 		let mut mock_x = MockSample::new();
-		mock_x.expect_eq().returning(move |_| {
-			cnt += 1;
-			if &cnt == &1 {
-				true
-			} else {
-				false
-			}
-		});
+		mock_x.expect_eq().returning(|_| true);
 
 		let mut mock_y = MockSample::new();
 		mock_y.expect_eq().returning(|_| true);
 
-		let mock_z = MockSample::new();
+		let mut mock_z = MockSample::new();
+		mock_z.expect_eq().returning(|_| false);
 
 		tester::assert_transitive(mock_x, mock_y, mock_z);
 	});
@@ -129,12 +127,6 @@ fn symmetric_fail_test() {
 
 #[test]
 fn assert_eq_test() {
-	fn gen(flg: bool) -> MockSample {
-		let mut mock = MockSample::new();
-		mock.expect_eq().returning(move |_| flg);
-		mock
-	}
-
 	tester::assert_eq(1, 1, 1, 2);
 
 	assert_panic(|| {
